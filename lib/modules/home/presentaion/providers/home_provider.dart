@@ -15,7 +15,7 @@ class HomeProvider extends ChangeNotifier {
   List<PhotoItemEntity>? photos;
   bool? hasReacMax;
   int? photosPage;
-  bool favouriteAdd = false;
+  /* bool favouriteAdd = false; */
 
   HomeProvider({
     required this.getCollectionsUseCase,
@@ -82,8 +82,22 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggle() {
+  /* void makeFavouriteAddFalse() {
+    if (favouriteAdd != false) {
+      favouriteAdd = false;
+      notifyListeners();
+    }
+  }
+
+  void makeFavouriteAddTrue() {
+    if (favouriteAdd != true) {
+      favouriteAdd = true;
+      notifyListeners();
+    }
+  } */
+
+  /* void toggle() {
     favouriteAdd = !favouriteAdd;
     notifyListeners();
-  }
+  } */
 }

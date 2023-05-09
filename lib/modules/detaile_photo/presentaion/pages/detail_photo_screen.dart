@@ -7,7 +7,9 @@ import 'package:wallpaper_app/core/resourses/strings_manager.dart';
 import 'package:wallpaper_app/modules/home/domain/entity/photo_entity.dart';
 import 'package:wallpaper_app/injection_container.dart' as di;
 import 'package:wallpaper_app/modules/detaile_photo/presentaion/providers/detail_photo_provider.dart';
+import 'package:wallpaper_app/modules/home/presentaion/providers/home_provider.dart';
 
+import '../../../../core/component/dialog/dismiss_dialog_func.dart';
 import '../../../../core/component/dialog/loading_dialog.dart';
 import '../../../../core/component/dialog/success_dialog.dart';
 import '../../../../core/component/snackbar/info_snackbar.dart';
@@ -20,12 +22,14 @@ class DetailPhotoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => di.sl<DetailPhotoProvider>(),
-      builder: (context, child) {
+    return const DetailPhotoLayout();
+    /* ChangeNotifierProvider.value(
+      value: di.sl<DetailPhotoProvider>(),
+      /* builder: (context, child) {
         return const DetailPhotoLayout();
-      },
-    );
+      }, */
+      child: const DetailPhotoLayout(),
+    ); */
   }
 }
 
@@ -38,10 +42,30 @@ class DetailPhotoLayout extends StatefulWidget {
 
 class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
   late PhotoItemEntity photo;
+  bool isAdded = false;
+  /* late bool isAdded; */
+
+  /*  bool _isInFavouritePhotos(List<PhotoItemEntity> favouritesPhotos, int id) {
+    for (PhotoItemEntity photo in favouritesPhotos) {
+      if (photo.id == id) {
+        return true;
+      }
+    }
+    return false;
+  } */
 
   @override
   void didChangeDependencies() {
     photo = ModalRoute.of(context)?.settings.arguments as PhotoItemEntity;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DetailPhotoProvider>().isInFavouritePhotos(
+          context.read<DetailPhotoProvider>().favouritePhotos, photo.id);
+      isAdded = context.read<DetailPhotoProvider>().favouriteAdded;
+    });
+
+    /* isAdded = _isInFavouritePhotos(
+        context.read<DetailPhotoProvider>().favouritePhotos, photo.id); */
     super.didChangeDependencies();
   }
 
@@ -49,55 +73,144 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
   Widget build(BuildContext context) {
     return Consumer<DetailPhotoProvider>(
       builder: (context, detailPhotoData, child) {
-        if (detailPhotoData.favouritStatus == DownloadStatus.downloading) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (detailPhotoData.isDownloading == false) {
+          if (detailPhotoData.deleteFavouritStatus ==
+              DownloadStatus.downloading) {
             showLoadingDialog(context);
-          });
-        }
-        if (detailPhotoData.favouritStatus == DownloadStatus.success) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pop(context);
-            showSuccessDialog(context, AppStrings.successAddingFavourite);
-          });
-        }
 
-        if (detailPhotoData.favouritStatus == DownloadStatus.failed) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pop(context);
+            /*  WidgetsBinding.instance.addPostFrameCallback((_) {
+              showLoadingDialog(context);
+            }); */
+          }
+
+          if (detailPhotoData.deleteFavouritStatus == DownloadStatus.success) {
+            dismissDialog(context);
+            showSuccessDialog(context, AppStrings.successDeletingFavourite);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              detailPhotoData.makeFavouriteAddFalse();
+            });
+            /* WidgetsBinding.instance.addPostFrameCallback((_) {
+              dismissDialog(context);
+              showSuccessDialog(context, AppStrings.successDeletingFavourite);
+              detailPhotoData.makeFavouriteAddFalse();
+            }); */
+            detailPhotoData.deleteFavouritStatus = DownloadStatus.initial;
+          }
+
+          if (detailPhotoData.deleteFavouritStatus == DownloadStatus.failed) {
+            dismissDialog(context);
+
+            showInfoSnackBar(
+              context,
+              AppStrings.somthingWrongDeletingFavourite,
+            );
+            /* WidgetsBinding.instance.addPostFrameCallback((_) {
+              dismissDialog(context);
+
+              showInfoSnackBar(
+                context,
+                AppStrings.somthingWrongDeletingFavourite,
+              );
+            }); */
+          }
+          if (detailPhotoData.insertFavouritStatus ==
+              DownloadStatus.downloading) {
+            showLoadingDialog(context);
+
+            /* WidgetsBinding.instance.addPostFrameCallback((_) {
+              showLoadingDialog(context);
+            }); */
+          }
+
+          if (detailPhotoData.insertFavouritStatus == DownloadStatus.success) {
+            dismissDialog(context);
+
+            showSuccessDialog(context, AppStrings.successAddingFavourite);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              detailPhotoData.makeFavouriteAddTrue();
+            });
+            /* detailPhotoData.makeFavouriteAddTrue(); */
+            /* WidgetsBinding.instance.addPostFrameCallback((_) {
+              dismissDialog(context);
+
+              showSuccessDialog(context, AppStrings.successAddingFavourite);
+              detailPhotoData.makeFavouriteAddTrue();
+            }); */
+            detailPhotoData.insertFavouritStatus = DownloadStatus.initial;
+          }
+
+          if (detailPhotoData.insertFavouritStatus == DownloadStatus.failed) {
+            dismissDialog(context);
+
             showInfoSnackBar(
               context,
               AppStrings.somthingWrongAddingFavourite,
             );
-          });
-        }
-        if (detailPhotoData.downloadStatus == DownloadStatus.downloading) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showLoadingDialog(context);
-          });
-        }
-        if (detailPhotoData.downloadStatus == DownloadStatus.success) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pop(context);
-            showSuccessDialog(context, AppStrings.successDownloading);
-          });
-        }
+            /* WidgetsBinding.instance.addPostFrameCallback((_) {
+              dismissDialog(context);
 
-        if (detailPhotoData.downloadStatus == DownloadStatus.failed) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pop(context);
+              showInfoSnackBar(
+                context,
+                AppStrings.somthingWrongAddingFavourite,
+              );
+            }); */
+          }
+        } else {
+          if (detailPhotoData.downloadStatus == DownloadStatus.downloading) {
+            showLoadingDialog(context);
+            /* WidgetsBinding.instance.addPostFrameCallback((_) {
+              showLoadingDialog(context);
+            }); */
+          }
+          if (detailPhotoData.downloadStatus == DownloadStatus.success) {
+            dismissDialog(context);
+
+            showSuccessDialog(context, AppStrings.successDownloading);
+            /*  WidgetsBinding.instance.addPostFrameCallback((_) {
+              dismissDialog(context);
+
+              showSuccessDialog(context, AppStrings.successDownloading);
+            }); */
+            detailPhotoData.downloadStatus = DownloadStatus.initial;
+          }
+
+          if (detailPhotoData.downloadStatus == DownloadStatus.failed) {
+            dismissDialog(context);
+
             showInfoSnackBar(
               context,
               AppStrings.somthingWrongDownloading,
             );
-          });
+            /* WidgetsBinding.instance.addPostFrameCallback((_) {
+              dismissDialog(context);
+
+              showInfoSnackBar(
+                context,
+                AppStrings.somthingWrongDownloading,
+              );
+            }); */
+          }
         }
+
         return Scaffold(
           appBar: AppBar(
             elevation: AppSize.s0,
             backgroundColor: Colors.transparent,
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             leading: IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                Navigator.pop(context);
+                if (isAdded) {
+                  detailPhotoData.makeFavouriteAddFalse();
+                }
+                /* if (detailPhotoData.favouriteAdded) {
+                  Navigator.pop(context,
+                      {"bool": detailPhotoData.favouriteAdded, "photo": photo});
+                } else {
+                  Navigator.pop(
+                      context, {"bool": detailPhotoData.favouriteAdded});
+                } */
+              },
               splashRadius: AppSize.s20,
               icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
@@ -218,30 +331,63 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            OutlinedButton.icon(
-                              onPressed: () {
-                                detailPhotoData.insertToFavourite(photo);
-                              },
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: AppColor.primaryColor,
-                                padding: const EdgeInsets.all(AppPadding.p16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(AppSize.s16),
-                                ),
-                              ),
-                              icon: Icon(
-                                CupertinoIcons.heart,
-                                color: AppColor.white,
-                              ),
-                              label: Text(
-                                AppStrings.favourite,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                            ),
+                            !detailPhotoData.favouriteAdded
+                                ? OutlinedButton.icon(
+                                    onPressed: () {
+                                      detailPhotoData.insertToFavourite(photo);
+
+                                      /* context
+                                          .read<HomeProvider>()
+                                          .makeFavouriteAddTrue(); */
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: AppColor.primaryColor,
+                                      padding:
+                                          const EdgeInsets.all(AppPadding.p16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(AppSize.s16),
+                                      ),
+                                    ),
+                                    icon: Icon(
+                                      CupertinoIcons.heart,
+                                      color: AppColor.white,
+                                    ),
+                                    label: Text(
+                                      AppStrings.favourite,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(color: Colors.white),
+                                    ),
+                                  )
+                                : OutlinedButton.icon(
+                                    onPressed: () {
+                                      detailPhotoData.deleteToFavourite(photo);
+
+                                      /*  detailPhotoData.insertToFavourite(photo); */
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      padding:
+                                          const EdgeInsets.all(AppPadding.p16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(AppSize.s16),
+                                      ),
+                                    ),
+                                    icon: Icon(
+                                      CupertinoIcons.heart_slash,
+                                      color: AppColor.white,
+                                    ),
+                                    label: Text(
+                                      AppStrings.remove,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(color: Colors.white),
+                                    ),
+                                  ),
                             const SizedBox(height: AppSize.s16),
                             OutlinedButton.icon(
                               onPressed: () {

@@ -48,4 +48,12 @@ class LocalDatasourceImpl extends LocalDatasource {
     List<Map> response = await sqlDb.readData(sql);
     return response;
   }
+
+  @override
+  Future<void> deleteToFavourite(String sql) async {
+    int response = await sqlDb.deleteData(sql);
+    if (response == 0) {
+      throw Exception();
+    }
+  }
 }

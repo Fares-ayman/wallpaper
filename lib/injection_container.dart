@@ -6,6 +6,7 @@ import 'package:wallpaper_app/core/resourses/constants_manager.dart';
 import 'package:wallpaper_app/modules/detaile_photo/data/datasource/local_datasource/local_datasource.dart';
 import 'package:wallpaper_app/modules/detaile_photo/data/datasource/local_datasource/local_datasource_impl.dart';
 import 'package:wallpaper_app/modules/detaile_photo/data/repository/detail_photo_repository_impl.dart';
+import 'package:wallpaper_app/modules/detaile_photo/domain/usecase/delete_to_favourite_usecase.dart';
 import 'package:wallpaper_app/modules/home/data/repository/home_repository_impl.dart';
 import 'package:wallpaper_app/modules/search/data/repository/search_repository_impl.dart';
 import 'package:wallpaper_app/modules/detaile_photo/domain/repository/detail_photo_repository.dart';
@@ -37,6 +38,7 @@ Future<void> init() async {
       downloadPhotoUsecase: sl(),
       insertToFavouriteUseCase: sl(),
       readFavouriteUseCase: sl(),
+      deleteToFavouriteUseCase: sl(),
     ),
   );
 
@@ -49,6 +51,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DownloadPhotoUsecase(sl()));
   sl.registerLazySingleton(() => InsertToFavouriteUseCase(sl()));
   sl.registerLazySingleton(() => ReadFavouriteUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteToFavouriteUseCase(sl()));
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(sl()));
   sl.registerLazySingleton<SearchRepository>(() => SearchRepositoryImpl(sl()));
   sl.registerLazySingleton<DetailPhotoRepository>(

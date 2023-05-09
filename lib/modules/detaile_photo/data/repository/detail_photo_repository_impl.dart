@@ -26,12 +26,21 @@ class DetailPhotoRepositoryImpl extends DetailPhotoRepository {
   }
 
   @override
+  Future<void> deleteToFavourite(String sql) async {
+    try {
+      await localDatasource.deleteToFavourite(sql);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<PhotoItemEntity>> readFavourites(String sql) async {
     try {
       List<Map> responseAsMap = await localDatasource.readFavourites(sql);
       List<PhotoItemEntity> responseAsEntity = responseAsMap
           .map((item) => PhotoItemEntity(
-              item['id'],
+              item['photo_id'],
               item['url'],
               item['photographer'],
               item['avgColor'],

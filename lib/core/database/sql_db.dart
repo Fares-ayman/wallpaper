@@ -26,7 +26,8 @@ class SqlDb {
     await db.execute('''
       CREATE TABLE photos 
       (
-        id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT, 
+        id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,
+        photo_id  INTEGER,
         url TEXT, 
         photographer TEXT, 
         avgColor TEXT, 
@@ -47,6 +48,12 @@ class SqlDb {
   insertData(String sql) async {
     Database? myDb = await db;
     int response = await myDb!.rawInsert(sql);
+    return response;
+  }
+
+  deleteData(String sql) async {
+    Database? myDb = await db;
+    int response = await myDb!.rawDelete(sql);
     return response;
   }
 

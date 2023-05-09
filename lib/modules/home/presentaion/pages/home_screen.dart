@@ -11,6 +11,7 @@ import '../../../../core/component/snackbar/info_snackbar.dart';
 import '../../../../core/resourses/color_manager.dart';
 import '../../../../core/resourses/routes_manager.dart';
 import '../../../../core/resourses/values_manager.dart';
+import '../../../detaile_photo/presentaion/providers/detail_photo_provider.dart';
 import '../widgets/collection_widget.dart';
 import '../widgets/photos_widget.dart';
 
@@ -21,38 +22,45 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => di.sl<HomeProvider>()
-        ..getCollection()
-        ..getPhotos(),
-      builder: (context, child) {
-        return Consumer<HomeProvider>(
-          builder: (context, homeData, child) {
-            if (homeData.collectionStatus == ProviderStateStatus.success &&
-                homeData.photosStatus == ProviderStateStatus.success) {
-              if (refreshController.isRefresh) {
-                refreshController.refreshCompleted();
-              }
-              if (refreshController.isLoading) {
-                refreshController.loadComplete();
-              }
-            }
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<DetailPhotoProvider>.value(
+          value: context.read<DetailPhotoProvider>()..readFavourite(),
+        ),
+        ChangeNotifierProvider<HomeProvider>.value(
+          value: context.read<HomeProvider>()
+            ..getCollection()
+            ..getPhotos(),
+          builder: (context, child) {
+            return Consumer2<DetailPhotoProvider, HomeProvider>(
+              builder: (context, detailePhotoData, homeData, child) {
+                if (homeData.collectionStatus == ProviderStateStatus.success &&
+                    homeData.photosStatus == ProviderStateStatus.success) {
+                  if (refreshController.isRefresh) {
+                    refreshController.refreshCompleted();
+                  }
+                  if (refreshController.isLoading) {
+                    refreshController.loadComplete();
+                  }
+                }
 
-            if (homeData.collectionStatus == ProviderStateStatus.error ||
-                homeData.photosStatus == ProviderStateStatus.error) {
-              if (refreshController.isRefresh) {
-                refreshController.refreshCompleted();
-              }
-              if (refreshController.isLoading) {
-                refreshController.loadComplete();
-              }
+                if (homeData.collectionStatus == ProviderStateStatus.error ||
+                    homeData.photosStatus == ProviderStateStatus.error) {
+                  if (refreshController.isRefresh) {
+                    refreshController.refreshCompleted();
+                  }
+                  if (refreshController.isLoading) {
+                    refreshController.loadComplete();
+                  }
 
-              showInfoSnackBar(context, AppStrings.somthingwrong);
-            }
-            return HomeScreenLayout(refreshController: refreshController);
+                  showInfoSnackBar(context, AppStrings.somthingwrong);
+                }
+                return HomeScreenLayout(refreshController: refreshController);
+              },
+            );
           },
-        );
-      },
+        ),
+      ],
     );
   }
 }
@@ -121,7 +129,7 @@ class HomeScreenLayout extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(
                             context, AppRoutesName.favouritePhoto);
-                        context.read<HomeProvider>().toggle();
+                        /* context.read<HomeProvider>().makeFavouriteAddFalse(); */
                       },
                       splashRadius: AppSize.s20,
                       icon: Icon(
@@ -129,7 +137,7 @@ class HomeScreenLayout extends StatelessWidget {
                         color: Theme.of(context).textTheme.headlineLarge?.color,
                       ),
                     ),
-                    context.read<HomeProvider>().favouriteAdd
+                    context.read<DetailPhotoProvider>().favouriteAdded
                         ? const Positioned(
                             bottom: 35.0,
                             left: 28.0,

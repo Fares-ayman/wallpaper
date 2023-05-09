@@ -20,39 +20,13 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return SearchLayout(refreshController: refreshController);
+    /* ChangeNotifierProvider(
       create: (context) => di.sl<SearchProvider>(),
       builder: (context, child) {
-        return Consumer<SearchProvider>(
-          builder: (context, seatrchData, child) {
-            if (seatrchData.photosStatus == ProviderStateStatus.success) {
-              if (refreshController.isRefresh) {
-                refreshController.refreshCompleted();
-              }
-              if (refreshController.isLoading) {
-                refreshController.loadComplete();
-              }
-            }
-
-            /// listen when pull to request error
-            if (seatrchData.photosStatus == ProviderStateStatus.error) {
-              if (refreshController.isRefresh) {
-                refreshController.refreshCompleted();
-              }
-              if (refreshController.isLoading) {
-                refreshController.loadComplete();
-              }
-
-              showInfoSnackBar(
-                context,
-                AppStrings.somthingwrong,
-              );
-            }
-            return SearchLayout(refreshController: refreshController);
-          },
-        );
+        return SearchLayout(refreshController: refreshController);
       },
-    );
+    ); */
   }
 }
 
@@ -139,6 +113,27 @@ class _SearchLayoutState extends State<SearchLayout> {
               searchData.photos.isEmpty) {
             return const PhotosLoading();
           }
+          if (searchData.photosStatus == ProviderStateStatus.success) {
+            if (refreshController.isRefresh) {
+              refreshController.refreshCompleted();
+            }
+            if (refreshController.isLoading) {
+              refreshController.loadComplete();
+            }
+          }
+          if (searchData.photosStatus == ProviderStateStatus.error) {
+            if (refreshController.isRefresh) {
+              refreshController.refreshCompleted();
+            }
+            if (refreshController.isLoading) {
+              refreshController.loadComplete();
+            }
+
+            showInfoSnackBar(
+              context,
+              AppStrings.somthingwrong,
+            );
+          }
           return SmartRefresher(
             controller: refreshController,
             header: CustomHeader(
@@ -176,9 +171,13 @@ class _SearchLayoutState extends State<SearchLayout> {
               },
             ),
             enablePullUp: true,
+            onRefresh: () {
+              context.read<SearchProvider>().searchPhotos(showLoading: false);
+            },
             enablePullDown: true,
-            onRefresh: context.read<SearchProvider>().searchPhotos,
-            onLoading: context.read<SearchProvider>().getNextPhotos,
+            onLoading: () {
+              context.read<SearchProvider>().getNextPhotos();
+            },
             child: GridView.custom(
               padding: const EdgeInsets.all(AppPadding.p16),
               gridDelegate: SliverQuiltedGridDelegate(
