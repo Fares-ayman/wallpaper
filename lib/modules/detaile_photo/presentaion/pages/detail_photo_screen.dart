@@ -36,6 +36,16 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
   bool isAdded = false;
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DetailPhotoProvider>().isInFavouritePhotos(
+          context.read<DetailPhotoProvider>().favouritePhotos, photo.id);
+      isAdded = context.read<DetailPhotoProvider>().favouriteAdded;
+    });
+    super.initState();
+  }
+
+  /* @override
   void didChangeDependencies() {
     photo = ModalRoute.of(context)?.settings.arguments as PhotoItemEntity;
 
@@ -45,10 +55,12 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
       isAdded = context.read<DetailPhotoProvider>().favouriteAdded;
     });
     super.didChangeDependencies();
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
+    photo = ModalRoute.of(context)?.settings.arguments as PhotoItemEntity;
+
     return Consumer<DetailPhotoProvider>(
       builder: (context, detailPhotoData, child) {
         if (detailPhotoData.isDownloading == false) {
