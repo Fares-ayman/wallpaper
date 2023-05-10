@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:wallpaper_app/modules/detaile_photo/presentaion/pages/detail_photo_screen.dart';
-import 'package:wallpaper_app/modules/home/domain/entity/photo_entity.dart';
 
 import '../../../../core/resourses/color_manager.dart';
 import '../../../../core/resourses/routes_manager.dart';
@@ -47,20 +45,6 @@ class PhotosWidget extends StatelessWidget {
                     AppRoutesName.detailPhoto,
                     arguments: homeData.photos![index],
                   );
-                  /* final isFound = _isInFavouritePhotos(
-                      favourite, homeData.photos![index].id);
-                  final result = await Navigator.pushNamed(
-                    context,
-                    AppRoutesName.detailPhoto,
-                    arguments: {
-                      "bool": isFound,
-                      "photo": homeData.photos![index]
-                    },
-                  ) as Map;
-                  if (result['bool']) {
-                    homeData.makeFavouriteAddTrue();
-                    favourite.add(result['photo']);
-                  } */
                 },
                 child: Stack(
                   fit: StackFit.expand,
@@ -80,9 +64,9 @@ class PhotosWidget extends StatelessWidget {
                       },
                     ),
                     Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.black, Colors.transparent],
+                          colors: [AppColor.black, AppColor.transparent],
                           begin: Alignment.bottomCenter,
                           end: Alignment.center,
                         ),
@@ -97,7 +81,7 @@ class PhotosWidget extends StatelessWidget {
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
-                            ?.copyWith(color: Colors.white),
+                            ?.copyWith(color: AppColor.white),
                         maxLines: 2,
                       ),
                     ),
@@ -111,15 +95,6 @@ class PhotosWidget extends StatelessWidget {
       },
     );
   }
-
-  /*  bool _isInFavouritePhotos(List<PhotoItemEntity> favouritesPhotos, int id) {
-    for (PhotoItemEntity photo in favouritesPhotos) {
-      if (photo.id == id) {
-        return true;
-      }
-    }
-    return false;
-  } */
 }
 
 class PhotosLoading extends StatelessWidget {
@@ -142,9 +117,9 @@ class PhotosLoading extends StatelessWidget {
         (context, index) {
           return Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
-            highlightColor: Colors.white,
+            highlightColor: AppColor.white,
             child: Container(
-              color: Colors.white,
+              color: AppColor.white,
             ),
           );
         },

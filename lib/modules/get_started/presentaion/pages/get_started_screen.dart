@@ -52,7 +52,7 @@ class GetStartedScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSize.s30),
                 SizedBox(
-                  height: 56,
+                  height: AppSize.s56,
                   width: MediaQuery.of(context).size.width,
                   child: ElevatedButton(
                     onPressed: () {
@@ -63,7 +63,7 @@ class GetStartedScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(AppSize.s16),
                       ),
                     ),
                     child: Text(

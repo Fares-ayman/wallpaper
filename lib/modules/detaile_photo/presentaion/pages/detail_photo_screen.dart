@@ -5,9 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:wallpaper_app/core/extension/string_extension.dart';
 import 'package:wallpaper_app/core/resourses/strings_manager.dart';
 import 'package:wallpaper_app/modules/home/domain/entity/photo_entity.dart';
-import 'package:wallpaper_app/injection_container.dart' as di;
 import 'package:wallpaper_app/modules/detaile_photo/presentaion/providers/detail_photo_provider.dart';
-import 'package:wallpaper_app/modules/home/presentaion/providers/home_provider.dart';
 
 import '../../../../core/component/dialog/dismiss_dialog_func.dart';
 import '../../../../core/component/dialog/loading_dialog.dart';
@@ -23,13 +21,6 @@ class DetailPhotoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const DetailPhotoLayout();
-    /* ChangeNotifierProvider.value(
-      value: di.sl<DetailPhotoProvider>(),
-      /* builder: (context, child) {
-        return const DetailPhotoLayout();
-      }, */
-      child: const DetailPhotoLayout(),
-    ); */
   }
 }
 
@@ -43,16 +34,6 @@ class DetailPhotoLayout extends StatefulWidget {
 class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
   late PhotoItemEntity photo;
   bool isAdded = false;
-  /* late bool isAdded; */
-
-  /*  bool _isInFavouritePhotos(List<PhotoItemEntity> favouritesPhotos, int id) {
-    for (PhotoItemEntity photo in favouritesPhotos) {
-      if (photo.id == id) {
-        return true;
-      }
-    }
-    return false;
-  } */
 
   @override
   void didChangeDependencies() {
@@ -63,9 +44,6 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
           context.read<DetailPhotoProvider>().favouritePhotos, photo.id);
       isAdded = context.read<DetailPhotoProvider>().favouriteAdded;
     });
-
-    /* isAdded = _isInFavouritePhotos(
-        context.read<DetailPhotoProvider>().favouritePhotos, photo.id); */
     super.didChangeDependencies();
   }
 
@@ -77,10 +55,6 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
           if (detailPhotoData.deleteFavouritStatus ==
               DownloadStatus.downloading) {
             showLoadingDialog(context);
-
-            /*  WidgetsBinding.instance.addPostFrameCallback((_) {
-              showLoadingDialog(context);
-            }); */
           }
 
           if (detailPhotoData.deleteFavouritStatus == DownloadStatus.success) {
@@ -89,11 +63,6 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               detailPhotoData.makeFavouriteAddFalse();
             });
-            /* WidgetsBinding.instance.addPostFrameCallback((_) {
-              dismissDialog(context);
-              showSuccessDialog(context, AppStrings.successDeletingFavourite);
-              detailPhotoData.makeFavouriteAddFalse();
-            }); */
             detailPhotoData.deleteFavouritStatus = DownloadStatus.initial;
           }
 
@@ -104,22 +73,10 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
               context,
               AppStrings.somthingWrongDeletingFavourite,
             );
-            /* WidgetsBinding.instance.addPostFrameCallback((_) {
-              dismissDialog(context);
-
-              showInfoSnackBar(
-                context,
-                AppStrings.somthingWrongDeletingFavourite,
-              );
-            }); */
           }
           if (detailPhotoData.insertFavouritStatus ==
               DownloadStatus.downloading) {
             showLoadingDialog(context);
-
-            /* WidgetsBinding.instance.addPostFrameCallback((_) {
-              showLoadingDialog(context);
-            }); */
           }
 
           if (detailPhotoData.insertFavouritStatus == DownloadStatus.success) {
@@ -129,13 +86,7 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               detailPhotoData.makeFavouriteAddTrue();
             });
-            /* detailPhotoData.makeFavouriteAddTrue(); */
-            /* WidgetsBinding.instance.addPostFrameCallback((_) {
-              dismissDialog(context);
 
-              showSuccessDialog(context, AppStrings.successAddingFavourite);
-              detailPhotoData.makeFavouriteAddTrue();
-            }); */
             detailPhotoData.insertFavouritStatus = DownloadStatus.initial;
           }
 
@@ -146,31 +97,16 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
               context,
               AppStrings.somthingWrongAddingFavourite,
             );
-            /* WidgetsBinding.instance.addPostFrameCallback((_) {
-              dismissDialog(context);
-
-              showInfoSnackBar(
-                context,
-                AppStrings.somthingWrongAddingFavourite,
-              );
-            }); */
           }
         } else {
           if (detailPhotoData.downloadStatus == DownloadStatus.downloading) {
             showLoadingDialog(context);
-            /* WidgetsBinding.instance.addPostFrameCallback((_) {
-              showLoadingDialog(context);
-            }); */
           }
           if (detailPhotoData.downloadStatus == DownloadStatus.success) {
             dismissDialog(context);
 
             showSuccessDialog(context, AppStrings.successDownloading);
-            /*  WidgetsBinding.instance.addPostFrameCallback((_) {
-              dismissDialog(context);
 
-              showSuccessDialog(context, AppStrings.successDownloading);
-            }); */
             detailPhotoData.downloadStatus = DownloadStatus.initial;
           }
 
@@ -181,21 +117,13 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
               context,
               AppStrings.somthingWrongDownloading,
             );
-            /* WidgetsBinding.instance.addPostFrameCallback((_) {
-              dismissDialog(context);
-
-              showInfoSnackBar(
-                context,
-                AppStrings.somthingWrongDownloading,
-              );
-            }); */
           }
         }
 
         return Scaffold(
           appBar: AppBar(
             elevation: AppSize.s0,
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColor.transparent,
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             leading: IconButton(
               onPressed: () {
@@ -203,13 +131,6 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                 if (isAdded) {
                   detailPhotoData.makeFavouriteAddFalse();
                 }
-                /* if (detailPhotoData.favouriteAdded) {
-                  Navigator.pop(context,
-                      {"bool": detailPhotoData.favouriteAdded, "photo": photo});
-                } else {
-                  Navigator.pop(
-                      context, {"bool": detailPhotoData.favouriteAdded});
-                } */
               },
               splashRadius: AppSize.s20,
               icon: Icon(
@@ -255,10 +176,10 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                         );
                       },
                       errorBuilder: (_, __, ___) {
-                        return const Center(
+                        return Center(
                           child: Icon(
                             Icons.broken_image_sharp,
-                            color: Colors.blueGrey,
+                            color: AppColor.blueGrey,
                           ),
                         );
                       },
@@ -335,10 +256,6 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                                 ? OutlinedButton.icon(
                                     onPressed: () {
                                       detailPhotoData.insertToFavourite(photo);
-
-                                      /* context
-                                          .read<HomeProvider>()
-                                          .makeFavouriteAddTrue(); */
                                     },
                                     style: OutlinedButton.styleFrom(
                                       backgroundColor: AppColor.primaryColor,
@@ -358,7 +275,7 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall
-                                          ?.copyWith(color: Colors.white),
+                                          ?.copyWith(color: AppColor.white),
                                     ),
                                   )
                                 : OutlinedButton.icon(
@@ -368,7 +285,7 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                                       /*  detailPhotoData.insertToFavourite(photo); */
                                     },
                                     style: OutlinedButton.styleFrom(
-                                      backgroundColor: Colors.red,
+                                      backgroundColor: AppColor.red,
                                       padding:
                                           const EdgeInsets.all(AppPadding.p16),
                                       shape: RoundedRectangleBorder(
@@ -385,7 +302,7 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall
-                                          ?.copyWith(color: Colors.white),
+                                          ?.copyWith(color: AppColor.white),
                                     ),
                                   ),
                             const SizedBox(height: AppSize.s16),

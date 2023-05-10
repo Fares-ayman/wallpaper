@@ -8,7 +8,6 @@ import 'package:wallpaper_app/modules/detaile_photo/presentaion/providers/detail
 
 import '../../../../core/resourses/color_manager.dart';
 import '../../../../core/resourses/routes_manager.dart';
-import '../../../../core/state_status/provider_state_status.dart';
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
@@ -94,9 +93,9 @@ class FavouriteLayout extends StatelessWidget {
                             },
                           ),
                           Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [Colors.black, Colors.transparent],
+                                colors: [AppColor.black, AppColor.transparent],
                                 begin: Alignment.bottomCenter,
                                 end: Alignment.center,
                               ),
@@ -112,7 +111,7 @@ class FavouriteLayout extends StatelessWidget {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
-                                  ?.copyWith(color: Colors.white),
+                                  ?.copyWith(color: AppColor.white),
                               maxLines: 2,
                             ),
                           ),
@@ -149,9 +148,9 @@ class PhotosLoading extends StatelessWidget {
         (context, index) {
           return Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
-            highlightColor: Colors.white,
+            highlightColor: AppColor.white,
             child: Container(
-              color: Colors.white,
+              color: AppColor.white,
             ),
           );
         },

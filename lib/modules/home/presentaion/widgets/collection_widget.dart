@@ -75,7 +75,7 @@ class CollectionWidget extends SliverPersistentHeaderDelegate {
                     style: Theme.of(context)
                         .textTheme
                         .titleSmall
-                        ?.copyWith(color: Colors.white),
+                        ?.copyWith(color: AppColor.white),
                     maxLines: 1,
                   ),
                 ),
@@ -95,13 +95,13 @@ class CollectionLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
-      highlightColor: Colors.white,
+      highlightColor: AppColor.white,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppPadding.p16),
         itemBuilder: (context, index) {
           return Container(
-            width: 100,
+            width: AppSize.s100,
             margin: EdgeInsets.only(
                 left: index == 0 ? AppMargin.m0 : AppMargin.m16),
             padding: const EdgeInsets.all(AppPadding.p16),

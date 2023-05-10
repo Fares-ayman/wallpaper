@@ -6,10 +6,12 @@ class AppColor {
   static Color white = const Color(0xFFFFFFFF);
   static Color black = const Color(0xFF000000);
   static Color blackGrey = const Color.fromARGB(255, 39, 39, 39);
+  static Color blueGrey = const Color.fromARGB(255, 96, 125, 139);
   static Color backgroundBlack = const Color.fromARGB(255, 37, 37, 37);
   static Color backgroundWhite = const Color.fromARGB(255, 255, 255, 255);
   static Color backgroundGray = const Color.fromARGB(255, 240, 240, 240);
   static Color transparent = Colors.transparent;
+  static Color red = Colors.red;
 
   static MaterialColor primarySwatch = const MaterialColor(
     0xFF489E83,

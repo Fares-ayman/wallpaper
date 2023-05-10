@@ -3,6 +3,7 @@ import 'package:wallpaper_app/modules/home/data/model/photo_model.dart';
 import 'package:wallpaper_app/modules/search/data/datasource/remote_datasource/search_remote_datatsource.dart';
 
 import '../../../../../core/network/client_utils.dart';
+import '../../../../../core/resourses/constants_manager.dart';
 
 class SearchRemoteDataSourceImpl extends SearchRemoteDataSource {
   final Dio client;
@@ -22,7 +23,7 @@ class SearchRemoteDataSourceImpl extends SearchRemoteDataSource {
       },
     );
 
-    if (result.statusCode == 200) {
+    if (result.statusCode == AppConstants.successStatusCode) {
       final resultFromJson = PhotoModel.fromJson(result.data);
       return resultFromJson.photos;
     } else {

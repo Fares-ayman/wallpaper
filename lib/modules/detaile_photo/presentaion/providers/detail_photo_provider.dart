@@ -45,8 +45,6 @@ class DetailPhotoProvider extends ChangeNotifier {
       downloadStatus = DownloadStatus.failed;
       notifyListeners();
     }
-
-    /* notifyListeners(); */
   }
 
   void insertToFavourite(PhotoItemEntity photoItemEntity) async {
@@ -54,7 +52,6 @@ class DetailPhotoProvider extends ChangeNotifier {
 
     try {
       isDownloading = false;
-      /* favouriteAdded = true; */
       notifyListeners();
       insertFavouritStatus = DownloadStatus.downloading;
       notifyListeners();
@@ -99,16 +96,13 @@ class DetailPhotoProvider extends ChangeNotifier {
 
     try {
       favouritePhotosStatus = ProviderStateStatus.loading;
-      /* notifyListeners(); */
 
       favouritePhotos = await readFavouriteUseCase.call('''
     SELECT * FROM  'photos'
 ''');
       favouritePhotosStatus = ProviderStateStatus.success;
-      /* notifyListeners(); */
     } catch (e) {
       favouritePhotosStatus = ProviderStateStatus.error;
-      /* notifyListeners(); */
     }
     notifyListeners();
   }

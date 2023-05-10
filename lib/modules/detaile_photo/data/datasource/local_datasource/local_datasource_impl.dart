@@ -7,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:wallpaper_app/core/database/sql_db.dart';
 import 'package:wallpaper_app/modules/detaile_photo/data/datasource/local_datasource/local_datasource.dart';
 
+import '../../../../../core/resourses/constants_manager.dart';
+
 class LocalDatasourceImpl extends LocalDatasource {
   final Dio dio;
   final SqlDb sqlDb;
@@ -19,26 +21,29 @@ class LocalDatasourceImpl extends LocalDatasource {
       var storage = await Permission.storage.isGranted;
 
       if (!storage) {
-        await Permission.storage.request();
+        PermissionStatus permissionStatus = await Permission.storage.request();
+        if (permissionStatus.isGranted) {
+          var response = await dio.get(photoUrl,
+              options: Options(responseType: ResponseType.bytes));
+          if (response.statusCode == AppConstants.successStatusCode) {
+            await ImageGallerySaver.saveImage(
+              Uint8List.fromList(response.data),
+              quality: AppConstants.qualityOfPhoto,
+            );
+          } else {
+            throw Exception();
+          }
+        } else {
+          throw Exception();
+        }
       }
-    }
-
-    var response = await dio.get(photoUrl,
-        options: Options(responseType: ResponseType.bytes));
-    if (response.statusCode == 200) {
-      await ImageGallerySaver.saveImage(
-        Uint8List.fromList(response.data),
-        quality: 60,
-      );
-    } else {
-      throw Exception();
     }
   }
 
   @override
   Future<void> insertToFavourite(String sql) async {
     int response = await sqlDb.insertData(sql);
-    if (response == 0) {
+    if (response == AppConstants.databaseErrorStatusCode) {
       throw Exception();
     }
   }
@@ -52,7 +57,7 @@ class LocalDatasourceImpl extends LocalDatasource {
   @override
   Future<void> deleteToFavourite(String sql) async {
     int response = await sqlDb.deleteData(sql);
-    if (response == 0) {
+    if (response == AppConstants.databaseErrorStatusCode) {
       throw Exception();
     }
   }

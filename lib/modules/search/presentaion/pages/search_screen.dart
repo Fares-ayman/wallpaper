@@ -7,7 +7,6 @@ import 'package:wallpaper_app/core/resourses/strings_manager.dart';
 import 'package:wallpaper_app/core/resourses/values_manager.dart';
 import 'package:wallpaper_app/core/state_status/provider_state_status.dart';
 import 'package:wallpaper_app/modules/search/presentaion/providers/search_provider.dart';
-import 'package:wallpaper_app/injection_container.dart' as di;
 
 import '../../../../core/component/snackbar/info_snackbar.dart';
 import '../../../../core/resourses/color_manager.dart';
@@ -21,12 +20,6 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SearchLayout(refreshController: refreshController);
-    /* ChangeNotifierProvider(
-      create: (context) => di.sl<SearchProvider>(),
-      builder: (context, child) {
-        return SearchLayout(refreshController: refreshController);
-      },
-    ); */
   }
 }
 
@@ -218,9 +211,9 @@ class _SearchLayoutState extends State<SearchLayout> {
                           },
                         ),
                         Container(
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Colors.black, Colors.transparent],
+                              colors: [AppColor.black, AppColor.transparent],
                               begin: Alignment.bottomCenter,
                               end: Alignment.center,
                             ),
@@ -235,7 +228,7 @@ class _SearchLayoutState extends State<SearchLayout> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: Colors.white),
+                                ?.copyWith(color: AppColor.white),
                             maxLines: 2,
                           ),
                         ),
@@ -274,9 +267,9 @@ class PhotosLoading extends StatelessWidget {
         (context, index) {
           return Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
-            highlightColor: Colors.white,
+            highlightColor: AppColor.white,
             child: Container(
-              color: Colors.white,
+              color: AppColor.white,
             ),
           );
         },

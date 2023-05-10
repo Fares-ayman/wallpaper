@@ -3,6 +3,7 @@ import 'package:wallpaper_app/modules/home/data/model/collection_model.dart';
 import 'package:wallpaper_app/modules/home/data/model/photo_model.dart';
 
 import '../../../../../core/network/client_utils.dart';
+import '../../../../../core/resourses/constants_manager.dart';
 import 'home_remote_datasource.dart';
 
 class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
@@ -18,7 +19,7 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
           "per_page": perPage,
         });
 
-    if (result.statusCode == 200) {
+    if (result.statusCode == AppConstants.successStatusCode) {
       final resultFromJson = CollectionModel.fromJson(result.data);
       return resultFromJson.collections;
     } else {
@@ -37,7 +38,7 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
       },
     );
 
-    if (result.statusCode == 200) {
+    if (result.statusCode == AppConstants.successStatusCode) {
       final resultFromJson = PhotoModel.fromJson(result.data);
       return resultFromJson.photos;
     } else {

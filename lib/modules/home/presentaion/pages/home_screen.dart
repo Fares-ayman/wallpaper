@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wallpaper_app/core/resourses/strings_manager.dart';
 import 'package:wallpaper_app/core/state_status/provider_state_status.dart';
-import 'package:wallpaper_app/injection_container.dart' as di;
 import 'package:wallpaper_app/modules/home/presentaion/providers/home_provider.dart';
 
 import '../../../../core/component/snackbar/info_snackbar.dart';
@@ -129,7 +128,6 @@ class HomeScreenLayout extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(
                             context, AppRoutesName.favouritePhoto);
-                        /* context.read<HomeProvider>().makeFavouriteAddFalse(); */
                       },
                       splashRadius: AppSize.s20,
                       icon: Icon(
@@ -138,11 +136,11 @@ class HomeScreenLayout extends StatelessWidget {
                       ),
                     ),
                     context.read<DetailPhotoProvider>().favouriteAdded
-                        ? const Positioned(
+                        ? Positioned(
                             bottom: 35.0,
                             left: 28.0,
                             child: CircleAvatar(
-                              backgroundColor: Colors.red,
+                              backgroundColor: AppColor.red,
                               radius: AppSize.s4,
                             ),
                           )
@@ -161,7 +159,7 @@ class HomeScreenLayout extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.background,
               elevation: 0,
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(76),
+                preferredSize: const Size.fromHeight(AppSize.s76),
                 child: Container(
                   height: AppSize.s76,
                   alignment: Alignment.center,
@@ -173,7 +171,7 @@ class HomeScreenLayout extends StatelessWidget {
                       height: AppSize.s76,
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(AppSize.s16),
                       ),
                       padding: const EdgeInsets.symmetric(
                           horizontal: AppPadding.p16),
@@ -181,9 +179,9 @@ class HomeScreenLayout extends StatelessWidget {
                           const EdgeInsets.symmetric(horizontal: AppMargin.m16),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             CupertinoIcons.search,
-                            color: Colors.black,
+                            color: AppColor.black,
                           ),
                           const SizedBox(width: AppSize.s8),
                           Text(
@@ -191,7 +189,7 @@ class HomeScreenLayout extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: Colors.black),
+                                ?.copyWith(color: AppColor.black),
                           ),
                         ],
                       ),
