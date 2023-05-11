@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wallpaper_app/core/resourses/strings_manager.dart';
 import 'package:wallpaper_app/modules/detaile_photo/presentaion/pages/favourite_screen.dart';
 
 import '../../modules/detaile_photo/presentaion/pages/detail_photo_screen.dart';
@@ -16,6 +15,7 @@ class AppRoutesName {
 }
 
 class AppRoute {
+  // ignore: body_might_complete_normally_nullable
   static Route<dynamic>? generate(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutesName.getStarted:
@@ -86,21 +86,6 @@ class AppRoute {
             );
           },
         );
-      default:
-        return unDefinedRoute();
     }
-  }
-
-  static Route<dynamic> unDefinedRoute() {
-    return MaterialPageRoute(
-      builder: (_) => Scaffold(
-        appBar: AppBar(
-          title: const Text(AppStrings.noRouteFound),
-        ),
-        body: const Center(
-          child: Text(AppStrings.noRouteFound),
-        ),
-      ),
-    );
   }
 }
