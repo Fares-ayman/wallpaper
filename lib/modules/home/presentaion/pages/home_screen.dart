@@ -73,150 +73,155 @@ class HomeScreenLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SmartRefresher(
-          controller: refreshController,
-          header: CustomHeader(
-            builder: (context, mode) {
-              if (mode == RefreshStatus.idle) {
-                return const SizedBox();
-              }
-              return Center(
-                child: SizedBox(
-                  width: AppSize.s32,
-                  height: AppSize.s32,
-                  child: CircularProgressIndicator(
-                    color: AppColor.primaryColor,
-                    strokeWidth: 2,
-                  ),
+      body: _bodyMethod(context),
+    );
+  }
+
+  Widget _bodyMethod(BuildContext context) {
+    return SafeArea(
+      child: SmartRefresher(
+        controller: refreshController,
+        header: CustomHeader(
+          builder: (context, mode) {
+            if (mode == RefreshStatus.idle) {
+              return const SizedBox();
+            }
+            return Center(
+              child: SizedBox(
+                width: AppSize.s32,
+                height: AppSize.s32,
+                child: CircularProgressIndicator(
+                  color: AppColor.primaryColor,
+                  strokeWidth: 2,
                 ),
-              );
-            },
-          ),
-          footer: CustomFooter(
-            builder: (context, mode) {
-              if (mode == LoadStatus.idle) {
-                return const SizedBox();
-              }
-              return Center(
-                child: SizedBox(
-                  width: AppSize.s32,
-                  height: AppSize.s32,
-                  child: CircularProgressIndicator(
-                    color: AppColor.primaryColor,
-                    strokeWidth: 2,
-                  ),
-                ),
-              );
-            },
-          ),
-          enablePullUp: true,
-          onRefresh: () {
-            context.read<HomeProvider>().getCollection(showLoading: false);
-            context.read<HomeProvider>().getPhotos(showLoading: false);
+              ),
+            );
           },
-          enablePullDown: true,
-          onLoading: () {
-            context.read<HomeProvider>().getNextPhotos();
+        ),
+        footer: CustomFooter(
+          builder: (context, mode) {
+            if (mode == LoadStatus.idle) {
+              return const SizedBox();
+            }
+            return Center(
+              child: SizedBox(
+                width: AppSize.s32,
+                height: AppSize.s32,
+                child: CircularProgressIndicator(
+                  color: AppColor.primaryColor,
+                  strokeWidth: 2,
+                ),
+              ),
+            );
           },
-          child: CustomScrollView(slivers: [
-            SliverAppBar(
-              actions: [
-                Stack(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, AppRoutesName.favouritePhoto);
-                      },
-                      splashRadius: AppSize.s20,
-                      icon: Icon(
-                        CupertinoIcons.heart,
-                        color: Theme.of(context).textTheme.headlineLarge?.color,
-                      ),
-                    ),
-                    context.read<DetailPhotoProvider>().favouriteAdded
-                        ? Positioned(
-                            bottom: 35.0,
-                            left: 28.0,
-                            child: CircleAvatar(
-                              backgroundColor: AppColor.red,
-                              radius: AppSize.s4,
-                            ),
-                          )
-                        : const SizedBox(),
-                  ],
-                ),
-              ],
-              automaticallyImplyLeading: false,
-              floating: true,
-              centerTitle: false,
-              title: Text(
-                AppStrings.discover,
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        enablePullUp: true,
+        onRefresh: () {
+          context.read<HomeProvider>().getCollection(showLoading: false);
+          context.read<HomeProvider>().getPhotos(showLoading: false);
+        },
+        enablePullDown: true,
+        onLoading: () {
+          context.read<HomeProvider>().getNextPhotos();
+        },
+        child: CustomScrollView(slivers: [
+          _sliverAppBarMethod(context),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: CollectionWidget(),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(AppPadding.p16),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                AppStrings.popularImages,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-              backgroundColor: Theme.of(context).colorScheme.background,
-              elevation: 0,
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(AppSize.s76),
-                child: Container(
-                  height: AppSize.s76,
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutesName.search);
-                    },
-                    child: Container(
-                      height: AppSize.s76,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(AppSize.s16),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppPadding.p16),
-                      margin:
-                          const EdgeInsets.symmetric(horizontal: AppMargin.m16),
-                      child: Row(
-                        children: [
-                          Icon(
-                            CupertinoIcons.search,
-                            color: AppColor.black,
-                          ),
-                          const SizedBox(width: AppSize.s8),
-                          Text(
-                            AppStrings.searchKeyword,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: AppColor.black),
-                          ),
-                        ],
-                      ),
+            ),
+          ),
+          const SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+                AppPadding.p16, AppPadding.p0, AppPadding.p16, AppPadding.p16),
+            sliver: PhotosWidget(),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  SliverAppBar _sliverAppBarMethod(BuildContext context) {
+    return SliverAppBar(
+      actions: [
+        Stack(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutesName.favouritePhoto);
+              },
+              splashRadius: AppSize.s20,
+              icon: Icon(
+                CupertinoIcons.heart,
+                color: Theme.of(context).textTheme.headlineLarge?.color,
+              ),
+            ),
+            context.read<DetailPhotoProvider>().favouriteAdded
+                ? Positioned(
+                    bottom: 35.0,
+                    left: 28.0,
+                    child: CircleAvatar(
+                      backgroundColor: AppColor.red,
+                      radius: AppSize.s4,
                     ),
+                  )
+                : const SizedBox(),
+          ],
+        ),
+      ],
+      automaticallyImplyLeading: false,
+      floating: true,
+      centerTitle: false,
+      title: Text(
+        AppStrings.discover,
+        textAlign: TextAlign.left,
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      elevation: 0,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(AppSize.s76),
+        child: Container(
+          height: AppSize.s76,
+          alignment: Alignment.center,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutesName.search);
+            },
+            child: Container(
+              height: AppSize.s76,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(AppSize.s16),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
+              margin: const EdgeInsets.symmetric(horizontal: AppMargin.m16),
+              child: Row(
+                children: [
+                  Icon(
+                    CupertinoIcons.search,
+                    color: AppColor.black,
                   ),
-                ),
+                  const SizedBox(width: AppSize.s8),
+                  Text(
+                    AppStrings.searchKeyword,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColor.black),
+                  ),
+                ],
               ),
             ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: CollectionWidget(),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.all(AppPadding.p16),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  AppStrings.popularImages,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-            ),
-            const SliverPadding(
-              padding: EdgeInsets.fromLTRB(AppPadding.p16, AppPadding.p0,
-                  AppPadding.p16, AppPadding.p16),
-              sliver: PhotosWidget(),
-            ),
-          ]),
+          ),
         ),
       ),
     );

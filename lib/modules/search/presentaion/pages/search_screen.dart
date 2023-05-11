@@ -56,47 +56,7 @@ class _SearchLayoutState extends State<SearchLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          iconSize: AppSize.s20,
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Theme.of(context).textTheme.headlineLarge?.color,
-          ),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.background,
-        title: TextField(
-          controller: keywordController,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: AppStrings.hintSearchTextField,
-            hintStyle: Theme.of(context).textTheme.bodyMedium,
-          ),
-          style: Theme.of(context).textTheme.bodyLarge,
-          autofocus: initialKeyword != null ? false : true,
-          textInputAction: TextInputAction.search,
-          onChanged: context.read<SearchProvider>().onKeywordChange,
-          onSubmitted: (_) {
-            context.read<SearchProvider>().searchPhotos();
-          },
-        ),
-        actions: [
-          context.read<SearchProvider>().keyword.isEmpty
-              ? const SizedBox()
-              : IconButton(
-                  onPressed: () {
-                    keywordController.clear();
-                    context.read<SearchProvider>().clearKeyword();
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Theme.of(context).textTheme.headlineLarge?.color,
-                  ),
-                ),
-        ],
-        elevation: 1,
-      ),
+      appBar: _appBarMethod(context),
       body: Consumer<SearchProvider>(
         builder: (context, searchData, child) {
           if (searchData.photosStatus == ProviderStateStatus.initial) {
@@ -171,77 +131,125 @@ class _SearchLayoutState extends State<SearchLayout> {
             onLoading: () {
               context.read<SearchProvider>().getNextPhotos();
             },
-            child: GridView.custom(
-              padding: const EdgeInsets.all(AppPadding.p16),
-              gridDelegate: SliverQuiltedGridDelegate(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                repeatPattern: QuiltedGridRepeatPattern.inverted,
-                pattern: const [
-                  QuiltedGridTile(2, 1),
-                  QuiltedGridTile(1, 1),
-                ],
-              ),
-              childrenDelegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutesName.detailPhoto,
-                        arguments: searchData.photos[index],
-                      );
-                    },
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image(
-                          image: NetworkImage(
-                            searchData.photos[index].src.portrait,
-                          ),
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) {
-                            return Center(
-                              child: Icon(
-                                Icons.broken_image_rounded,
-                                color: AppColor.primaryColor,
-                              ),
-                            );
-                          },
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [AppColor.black, AppColor.transparent],
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.center,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 16,
-                          right: 16,
-                          bottom: 16,
-                          child: Text(
-                            searchData.photos[index].photographer,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: AppColor.white),
-                            maxLines: 2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                childCount: searchData.photos.length,
-              ),
-            ),
+            child: _bodyMethod(searchData),
           );
         },
       ),
+    );
+  }
+
+  Widget _bodyMethod(SearchProvider searchData) {
+    return GridView.custom(
+      padding: const EdgeInsets.all(AppPadding.p16),
+      gridDelegate: SliverQuiltedGridDelegate(
+        crossAxisCount: 2,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        repeatPattern: QuiltedGridRepeatPattern.inverted,
+        pattern: const [
+          QuiltedGridTile(2, 1),
+          QuiltedGridTile(1, 1),
+        ],
+      ),
+      childrenDelegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                AppRoutesName.detailPhoto,
+                arguments: searchData.photos[index],
+              );
+            },
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image(
+                  image: NetworkImage(
+                    searchData.photos[index].src.portrait,
+                  ),
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) {
+                    return Center(
+                      child: Icon(
+                        Icons.broken_image_rounded,
+                        color: AppColor.primaryColor,
+                      ),
+                    );
+                  },
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColor.black, AppColor.transparent],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.center,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                  child: Text(
+                    searchData.photos[index].photographer,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColor.white),
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        childCount: searchData.photos.length,
+      ),
+    );
+  }
+
+  AppBar _appBarMethod(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        iconSize: AppSize.s20,
+        icon: Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: Theme.of(context).textTheme.headlineLarge?.color,
+        ),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: TextField(
+        controller: keywordController,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: AppStrings.hintSearchTextField,
+          hintStyle: Theme.of(context).textTheme.bodyMedium,
+        ),
+        style: Theme.of(context).textTheme.bodyLarge,
+        autofocus: initialKeyword != null ? false : true,
+        textInputAction: TextInputAction.search,
+        onChanged: context.read<SearchProvider>().onKeywordChange,
+        onSubmitted: (_) {
+          context.read<SearchProvider>().searchPhotos();
+        },
+      ),
+      actions: [
+        context.read<SearchProvider>().keyword.isEmpty
+            ? const SizedBox()
+            : IconButton(
+                onPressed: () {
+                  keywordController.clear();
+                  context.read<SearchProvider>().clearKeyword();
+                },
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(context).textTheme.headlineLarge?.color,
+                ),
+              ),
+      ],
+      elevation: 1,
     );
   }
 }

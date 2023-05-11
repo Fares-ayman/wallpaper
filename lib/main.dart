@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/core/resourses/routes_manager.dart';
 import 'package:wallpaper_app/core/resourses/theme_manager.dart';
@@ -35,7 +36,10 @@ class MyApp extends StatelessWidget {
         title: 'Wellpaper',
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.light,
+        themeMode: SchedulerBinding.instance.window.platformBrightness ==
+                Brightness.dark
+            ? ThemeMode.dark
+            : ThemeMode.light,
         initialRoute: AppRoutesName.getStarted,
         onGenerateRoute: AppRoute.generate,
       ),
