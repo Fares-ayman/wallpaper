@@ -275,7 +275,8 @@ class _DetailPhotoLayoutState extends State<DetailPhotoLayout> {
                               Theme.of(context).textTheme.headlineLarge?.color,
                         ),
                         btnText: AppStrings.download,
-                        btnTextColor: AppColor.black,
+                        btnTextColor:
+                            Theme.of(context).textTheme.headlineLarge!.color!,
                       ),
                     ],
                   ),

@@ -36,10 +36,11 @@ class MyApp extends StatelessWidget {
         title: 'Wellpaper',
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
-        themeMode: SchedulerBinding.instance.window.platformBrightness ==
+        themeMode: /*  SchedulerBinding.instance.window.platformBrightness ==
                 Brightness.dark
             ? ThemeMode.dark
-            : ThemeMode.light,
+            : */
+            ThemeMode.dark,
         initialRoute: AppRoutesName.getStarted,
         onGenerateRoute: AppRoute.generate,
       ),
