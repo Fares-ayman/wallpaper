@@ -212,7 +212,11 @@ class _SearchLayoutState extends State<SearchLayout> {
   AppBar _appBarMethod(BuildContext context) {
     return AppBar(
       leading: IconButton(
-        onPressed: () => Navigator.pop(context),
+        onPressed: () {
+          context.read<SearchProvider>().clearList();
+
+          Navigator.pop(context);
+        },
         iconSize: AppSize.s20,
         icon: Icon(
           Icons.arrow_back_ios_new_rounded,

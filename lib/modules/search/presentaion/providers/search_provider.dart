@@ -64,4 +64,9 @@ class SearchProvider extends ChangeNotifier {
     final nextPage = photosPage! + 1;
     searchPhotos(showLoading: false, page: nextPage);
   }
+
+  void clearList() {
+    photos = [];
+    notifyListeners();
+  }
 }
