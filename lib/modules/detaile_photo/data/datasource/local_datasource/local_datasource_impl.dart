@@ -22,20 +22,19 @@ class LocalDatasourceImpl extends LocalDatasource {
 
       if (!storage) {
         PermissionStatus permissionStatus = await Permission.storage.request();
-        if (permissionStatus.isGranted) {
-          var response = await dio.get(photoUrl,
-              options: Options(responseType: ResponseType.bytes));
-          if (response.statusCode == AppConstants.successStatusCode) {
-            await ImageGallerySaver.saveImage(
-              Uint8List.fromList(response.data),
-              quality: AppConstants.qualityOfPhoto,
-            );
-          } else {
-            throw Exception();
-          }
-        } else {
+        if (permissionStatus.isDenied) {
           throw Exception();
         }
+      }
+      var response = await dio.get(photoUrl,
+          options: Options(responseType: ResponseType.bytes));
+      if (response.statusCode == AppConstants.successStatusCode) {
+        await ImageGallerySaver.saveImage(
+          Uint8List.fromList(response.data),
+          quality: AppConstants.qualityOfPhoto,
+        );
+      } else {
+        throw Exception();
       }
     }
   }
